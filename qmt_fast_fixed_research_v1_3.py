@@ -61,6 +61,14 @@ PROFILE_WEIGHTS = {
 }
 
 
+# 行情拉取回退模式（常量化，避免在高频路径重复创建列表对象）
+FETCH_MODES = (
+    ('ex', ['lastPrice', 'askPrice', 'bidPrice']),
+    ('ex', ['quoter']),
+    ('old', ['quoter']),
+)
+
+
 # 安全转为浮点数；任意解析失败时返回默认值。
 def safe_num(x, default=0.0):
     try:
@@ -291,11 +299,7 @@ def try_fetch_pair(ContextInfo, end_str, mode):
 def one_time_single_probe(ContextInfo, end_str):
     """单次诊断探测：用于早期缺失排查。"""
     # 仅用于早期缺失诊断；只运行一次，开销可接受。
-    modes = [
-        ('ex', ['lastPrice', 'askPrice', 'bidPrice']),
-        ('ex', ['quoter']),
-        ('old', ['quoter']),
-    ]
+    modes = FETCH_MODES
     msgs = []
     for code in [A_CODE, B_CODE]:
         ok = False
@@ -351,11 +355,7 @@ def fetch_pair_snapshot(ContextInfo, cur_dt, st):
         except Exception:
             st['fetch_mode'] = None  # 当前可用拉取模式缓存
 
-    modes = [
-        ('ex', ['lastPrice', 'askPrice', 'bidPrice']),
-        ('ex', ['quoter']),
-        ('old', ['quoter']),
-    ]
+    modes = FETCH_MODES
     for m in modes:
         try:
             pa, pb = try_fetch_pair(ContextInfo, end_str, m)
