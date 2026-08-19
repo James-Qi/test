@@ -35,7 +35,7 @@
     "purpose": "R0 full-history corporate-action completion and independent adjusted-price validation",
     "semantic_warning": "Yahoo Close is treated as split-adjusted vendor history, not as the primary raw execution price. TDX raw OHLC remains the execution-price base."
   },
-  "retrieved_at_utc": "2026-08-19T21:05:08+00:00",
+  "retrieved_at_utc": "2026-08-19T21:08:13+00:00",
   "source_semantics": {
     "vendor_ohlc": "Yahoo chart history with auto_adjust=False; retained only as a secondary vendor series.",
     "primary_execution_price": "TDX raw/unadjusted OHLC, outside this bridge.",
@@ -49,7 +49,7 @@
     "pyarrow": "21.0.0",
     "yfinance": "0.2.65"
   },
-  "history_rows": 137179,
+  "history_rows": 137160,
   "action_rows": 2362,
   "symbols": [
     "SPY",
@@ -123,7 +123,7 @@
     },
     {
       "symbol": "RSP",
-      "rows": 5863,
+      "rows": 5861,
       "min_date": "2003-05-01",
       "max_date": "2026-08-19",
       "cash_dividend_events": 92,
@@ -134,7 +134,7 @@
     },
     {
       "symbol": "MDY",
-      "rows": 7875,
+      "rows": 7873,
       "min_date": "1995-05-04",
       "max_date": "2026-08-19",
       "cash_dividend_events": 126,
@@ -145,7 +145,7 @@
     },
     {
       "symbol": "XLB",
-      "rows": 6956,
+      "rows": 6954,
       "min_date": "1998-12-22",
       "max_date": "2026-08-19",
       "cash_dividend_events": 110,
@@ -233,7 +233,7 @@
     },
     {
       "symbol": "XLY",
-      "rows": 6956,
+      "rows": 6954,
       "min_date": "1998-12-22",
       "max_date": "2026-08-19",
       "cash_dividend_events": 110,
@@ -244,7 +244,7 @@
     },
     {
       "symbol": "XLC",
-      "rows": 2052,
+      "rows": 2051,
       "min_date": "2018-06-19",
       "max_date": "2026-08-19",
       "cash_dividend_events": 32,
@@ -255,7 +255,7 @@
     },
     {
       "symbol": "XLRE",
-      "rows": 2730,
+      "rows": 2731,
       "min_date": "2015-10-08",
       "max_date": "2026-08-19",
       "cash_dividend_events": 43,
@@ -266,7 +266,7 @@
     },
     {
       "symbol": "IWF",
-      "rows": 6596,
+      "rows": 6593,
       "min_date": "2000-05-26",
       "max_date": "2026-08-19",
       "cash_dividend_events": 107,
@@ -277,7 +277,7 @@
     },
     {
       "symbol": "IWD",
-      "rows": 6596,
+      "rows": 6594,
       "min_date": "2000-05-26",
       "max_date": "2026-08-19",
       "cash_dividend_events": 106,
@@ -288,7 +288,7 @@
     },
     {
       "symbol": "MTUM",
-      "rows": 3354,
+      "rows": 3352,
       "min_date": "2013-04-18",
       "max_date": "2026-08-19",
       "cash_dividend_events": 53,
@@ -299,7 +299,7 @@
     },
     {
       "symbol": "QUAL",
-      "rows": 3291,
+      "rows": 3292,
       "min_date": "2013-07-18",
       "max_date": "2026-08-19",
       "cash_dividend_events": 51,
@@ -310,7 +310,7 @@
     },
     {
       "symbol": "USMV",
-      "rows": 3728,
+      "rows": 3725,
       "min_date": "2011-10-20",
       "max_date": "2026-08-19",
       "cash_dividend_events": 61,
@@ -321,7 +321,7 @@
     },
     {
       "symbol": "VLUE",
-      "rows": 3354,
+      "rows": 3352,
       "min_date": "2013-04-18",
       "max_date": "2026-08-19",
       "cash_dividend_events": 53,
