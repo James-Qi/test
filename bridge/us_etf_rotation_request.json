@@ -1,5 +1,6 @@
 {
   "dataset_id": "us_etf_rotation_yahoo_bridge_v1_20260819",
+  "request_revision": 2,
   "symbols": [
     "SPY", "QQQ", "IWM", "DIA", "RSP", "MDY",
     "XLB", "XLE", "XLF", "XLI", "XLK", "XLP", "XLU", "XLV", "XLY", "XLC", "XLRE",
