@@ -1,0 +1,14 @@
+{
+  "dataset_id": "us_etf_rotation_yahoo_bridge_v1_20260819",
+  "symbols": [
+    "SPY", "QQQ", "IWM", "DIA", "RSP", "MDY",
+    "XLB", "XLE", "XLF", "XLI", "XLK", "XLP", "XLU", "XLV", "XLY", "XLC", "XLRE",
+    "IWF", "IWD", "MTUM", "QUAL", "USMV", "VLUE"
+  ],
+  "start": "1993-01-01",
+  "end_exclusive": "2026-08-20",
+  "interval": "1d",
+  "source": "Yahoo Finance chart API via yfinance",
+  "purpose": "R0 full-history corporate-action completion and independent adjusted-price validation",
+  "semantic_warning": "Yahoo Close is treated as split-adjusted vendor history, not as the primary raw execution price. TDX raw OHLC remains the execution-price base."
+}
