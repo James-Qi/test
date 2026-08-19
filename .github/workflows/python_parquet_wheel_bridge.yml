@@ -1,0 +1,33 @@
+name: Python Parquet wheel bridge
+
+on:
+  pull_request:
+    paths:
+      - "bridge/python_parquet_wheel_request.txt"
+      - ".github/workflows/python_parquet_wheel_bridge.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  freeze-wheel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download pinned PyArrow wheel
+        run: |
+          mkdir -p bridge/wheel_output
+          python -m pip download --only-binary=:all: --no-deps "pyarrow==21.0.0" -d bridge/wheel_output
+          sha256sum bridge/wheel_output/* > bridge/wheel_output/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pyarrow-cp313-wheel
+          path: bridge/wheel_output/
+          if-no-files-found: error
+          retention-days: 2
