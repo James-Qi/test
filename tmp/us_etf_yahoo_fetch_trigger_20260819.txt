@@ -1,1 +1,1 @@
-Temporary pull-request trigger for the US ETF R0/R1 data cache. Delete after artifact retrieval.
+Temporary pull-request trigger for the US ETF R0/R1 data cache. Daily-granularity fix revision 2. Delete after artifact retrieval.
