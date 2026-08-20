@@ -15,6 +15,7 @@ SYMBOLS = [
     "XLB", "XLE", "XLF", "XLI", "XLK", "XLP", "XLU", "XLV", "XLY", "XLC", "XLRE",
     "IWF", "IWD", "MTUM", "QUAL", "USMV", "VLUE",
 ]
+START = dt.date(2026, 7, 10)
 CUTOFF = dt.date(2026, 8, 19)
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/151.0 Safari/537.36"
 OUT = Path("artifact")
@@ -23,15 +24,16 @@ RAW.mkdir(parents=True, exist_ok=True)
 NY = ZoneInfo("America/New_York")
 
 
-def fetch_symbol(symbol: str, fetch_log: list[dict]) -> bytes:
+def epoch(date_value: dt.date) -> int:
+    return int(dt.datetime.combine(date_value, dt.time(), tzinfo=dt.timezone.utc).timestamp())
+
+
+def fetch_url(symbol: str, query: str, kind: str, fetch_log: list[dict]) -> bytes:
     endpoints = ["query2.finance.yahoo.com", "query1.finance.yahoo.com"]
     last_error = None
     for attempt in range(1, 7):
         host = endpoints[(attempt - 1) % len(endpoints)]
-        url = (
-            f"https://{host}/v8/finance/chart/{symbol}"
-            "?range=max&interval=1d&events=div%2Csplits&includeAdjustedClose=true"
-        )
+        url = f"https://{host}/v8/finance/chart/{symbol}?{query}"
         req = urllib.request.Request(
             url,
             headers={
@@ -49,17 +51,19 @@ def fetch_symbol(symbol: str, fetch_log: list[dict]) -> bytes:
                 raise RuntimeError(f"Yahoo chart error: {err}")
             if not obj.get("chart", {}).get("result"):
                 raise RuntimeError("Yahoo chart result is empty")
-            fetch_log.append(
-                {"symbol": symbol, "attempt": attempt, "host": host, "status": "pass", "bytes": len(payload), "error": ""}
-            )
+            fetch_log.append({
+                "symbol": symbol, "kind": kind, "attempt": attempt, "host": host,
+                "status": "pass", "bytes": len(payload), "error": "",
+            })
             return payload
-        except Exception as exc:  # noqa: BLE001 - audit log preserves exact vendor failure
+        except Exception as exc:  # audit the exact vendor failure and retry
             last_error = repr(exc)
-            fetch_log.append(
-                {"symbol": symbol, "attempt": attempt, "host": host, "status": "retry", "bytes": 0, "error": last_error}
-            )
+            fetch_log.append({
+                "symbol": symbol, "kind": kind, "attempt": attempt, "host": host,
+                "status": "retry", "bytes": 0, "error": last_error,
+            })
             time.sleep(min(2**attempt, 20))
-    raise RuntimeError(f"failed {symbol}: {last_error}")
+    raise RuntimeError(f"failed {symbol} {kind}: {last_error}")
 
 
 def main() -> None:
@@ -68,14 +72,28 @@ def main() -> None:
     symbol_summary: list[dict] = []
     fetch_log: list[dict] = []
 
+    events_query = "range=max&interval=1d&events=div%2Csplits&includeAdjustedClose=true"
+    current_query = (
+        f"period1={epoch(START)}&period2={epoch(CUTOFF + dt.timedelta(days=2))}"
+        "&interval=1d&events=div%2Csplits&includeAdjustedClose=true"
+    )
+
     for idx, symbol in enumerate(SYMBOLS, 1):
-        payload = fetch_symbol(symbol, fetch_log)
-        (RAW / f"{symbol}.json").write_bytes(payload)
-        root = json.loads(payload)["chart"]["result"][0]
-        meta = root.get("meta", {})
-        timestamps = root.get("timestamp") or []
-        quote = (root.get("indicators", {}).get("quote") or [{}])[0]
-        adjclose = (root.get("indicators", {}).get("adjclose") or [{}])[0].get("adjclose") or []
+        events_payload = fetch_url(symbol, events_query, "events_max", fetch_log)
+        current_payload = fetch_url(symbol, current_query, "current_daily", fetch_log)
+        (RAW / f"{symbol}_events_max.json").write_bytes(events_payload)
+        (RAW / f"{symbol}_current_daily.json").write_bytes(current_payload)
+
+        events_root = json.loads(events_payload)["chart"]["result"][0]
+        current_root = json.loads(current_payload)["chart"]["result"][0]
+        meta = current_root.get("meta", {})
+        granularity = meta.get("dataGranularity")
+        if granularity != "1d":
+            raise RuntimeError(f"{symbol}: expected daily granularity, got {granularity!r}")
+
+        timestamps = current_root.get("timestamp") or []
+        quote = (current_root.get("indicators", {}).get("quote") or [{}])[0]
+        adjclose = (current_root.get("indicators", {}).get("adjclose") or [{}])[0].get("adjclose") or []
         n = len(timestamps)
         if not all(len(quote.get(k) or []) == n for k in ["open", "high", "low", "close", "volume"]):
             raise RuntimeError(f"{symbol}: OHLCV array length mismatch")
@@ -85,7 +103,7 @@ def main() -> None:
         symbol_rows: list[dict] = []
         for i, ts in enumerate(timestamps):
             trade_date = dt.datetime.fromtimestamp(ts, tz=dt.timezone.utc).astimezone(NY).date()
-            if trade_date > CUTOFF:
+            if not (START <= trade_date <= CUTOFF):
                 continue
             row = {
                 "ticker": symbol,
@@ -100,14 +118,14 @@ def main() -> None:
                 "currency": meta.get("currency"),
                 "exchange_name": meta.get("exchangeName"),
                 "instrument_type": meta.get("instrumentType"),
-                "source": "yahoo_chart_v8",
+                "source": "yahoo_chart_v8_explicit_period_daily",
                 "source_snapshot_date": CUTOFF.isoformat(),
             }
             bars.append(row)
             symbol_rows.append(row)
 
         symbol_actions: list[dict] = []
-        events = root.get("events") or {}
+        events = events_root.get("events") or {}
         for event_type, key in [("cash_dividend", "dividends"), ("split", "splits")]:
             for ev in (events.get(key) or {}).values():
                 ts = int(ev.get("date"))
@@ -123,35 +141,37 @@ def main() -> None:
                     "split_numerator": ev.get("numerator") if event_type == "split" else None,
                     "split_denominator": ev.get("denominator") if event_type == "split" else None,
                     "split_ratio": ev.get("splitRatio") if event_type == "split" else None,
-                    "source": "yahoo_chart_v8",
+                    "source": "yahoo_chart_v8_events_max",
                     "source_snapshot_date": CUTOFF.isoformat(),
                 }
                 actions.append(action)
                 symbol_actions.append(action)
 
-        symbol_summary.append(
-            {
-                "ticker": symbol,
-                "rows": len(symbol_rows),
-                "min_date": symbol_rows[0]["trade_date"] if symbol_rows else None,
-                "max_date": symbol_rows[-1]["trade_date"] if symbol_rows else None,
-                "dividend_events": sum(a["action_type"] == "cash_dividend" for a in symbol_actions),
-                "split_events": sum(a["action_type"] == "split" for a in symbol_actions),
-                "raw_json_sha256": hashlib.sha256(payload).hexdigest(),
-                "raw_json_bytes": len(payload),
-            }
-        )
-        print(f"[{idx:02d}/{len(SYMBOLS)}] {symbol}: {len(symbol_rows)} rows, {len(symbol_actions)} actions", flush=True)
-        time.sleep(1.0)
+        symbol_summary.append({
+            "ticker": symbol,
+            "daily_rows": len(symbol_rows),
+            "daily_min_date": symbol_rows[0]["trade_date"] if symbol_rows else None,
+            "daily_max_date": symbol_rows[-1]["trade_date"] if symbol_rows else None,
+            "daily_granularity": granularity,
+            "events_max_granularity": events_root.get("meta", {}).get("dataGranularity"),
+            "dividend_events": sum(a["action_type"] == "cash_dividend" for a in symbol_actions),
+            "split_events": sum(a["action_type"] == "split" for a in symbol_actions),
+            "events_json_sha256": hashlib.sha256(events_payload).hexdigest(),
+            "daily_json_sha256": hashlib.sha256(current_payload).hexdigest(),
+        })
+        print(f"[{idx:02d}/{len(SYMBOLS)}] {symbol}: {len(symbol_rows)} daily rows, {len(symbol_actions)} actions", flush=True)
+        time.sleep(0.5)
 
     bars.sort(key=lambda r: (r["ticker"], r["trade_date"]))
     actions.sort(key=lambda r: (r["ticker"], r["event_date"], r["action_type"]))
+    if len({(r["ticker"], r["trade_date"]) for r in bars}) != len(bars):
+        raise RuntimeError("duplicate ticker/date rows")
 
     bar_fields = [
         "ticker", "trade_date", "timestamp_utc", "open", "high", "low", "close", "adj_close", "volume",
         "currency", "exchange_name", "instrument_type", "source", "source_snapshot_date",
     ]
-    with gzip.open(OUT / "yahoo_u2_daily_1990_20260819.csv.gz", "wt", encoding="utf-8", newline="") as f:
+    with gzip.open(OUT / "yahoo_u2_daily_increment_20260710_20260819.csv.gz", "wt", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=bar_fields)
         writer.writeheader()
         writer.writerows(bars)
@@ -171,20 +191,21 @@ def main() -> None:
         writer.writerows(symbol_summary)
 
     with open(OUT / "fetch_log.csv", "w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["symbol", "attempt", "host", "status", "bytes", "error"])
+        writer = csv.DictWriter(f, fieldnames=["symbol", "kind", "attempt", "host", "status", "bytes", "error"])
         writer.writeheader()
         writer.writerows(fetch_log)
 
     summary = {
         "generated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "start_date": START.isoformat(),
         "cutoff_date": CUTOFF.isoformat(),
         "symbols": SYMBOLS,
         "symbol_count": len(SYMBOLS),
-        "bar_rows": len(bars),
+        "daily_bar_rows": len(bars),
         "corporate_action_rows": len(actions),
         "cash_dividend_events": sum(a["action_type"] == "cash_dividend" for a in actions),
         "split_events": sum(a["action_type"] == "split" for a in actions),
-        "source": "Yahoo chart v8 endpoint; cached once for research audit",
+        "source": "Yahoo chart v8; explicit daily period for increment; range=max used only for events",
     }
     (OUT / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
