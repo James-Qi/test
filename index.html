@@ -1,86 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>18DAO 一把刀實用查詢</title>
+    <meta name="keywords" content="一把刀,實用查詢,國語辭典,中文字典,漢語詞典,外文詞典">
+    <meta name="description" content="多語言一把刀實用查詢系列網站，始於2005年，致力於提供各類實用查詢信息，不斷為網民提供更優質的資訊服務。">
+    <meta name="color-scheme" content="light dark">
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: linear-gradient(135deg, #f8fafc, #eef2ff);
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(148, 163, 184, 0.35);
+            --text-primary: #1f2937;
+            --text-secondary: #475569;
+            --accent: #f97316;
+            --accent-dark: #ea580c;
+            --divider: rgba(148, 163, 184, 0.25);
+            font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif;
+        }
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>18DAO 一把刀實用查詢</title>
-		<meta name="keywords" content="一把刀,實用查詢,國語辭典,中文字典,漢語詞典,外文詞典">
-		<meta name="description" content="多語言一把刀實用查詢系列網站，始於2005年，致力於提供各類實用查詢信息，不斷為網民提供更優質的資訊服務。">
-		<meta name="verify-v1" content="Qsep+eu1kdIVOBIgH1zRTyFBcO1aZyQ87mdh37E/FWQ=" />
-		<meta name="MobileOptimized" content="width" />
-		<meta name="HandheldFriendly" content="true" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="cleartype" content="on" />
-		<!--
-		<script data-ad-client="ca-pub-8670212889350560" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-		-->
-		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7763986334422934" crossorigin="anonymous" type="5ecfac430f60c5e43243e923-text/javascript"></script>
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-241337-5" type="5ecfac430f60c5e43243e923-text/javascript"></script>
-		<script type="5ecfac430f60c5e43243e923-text/javascript">
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
-			gtag('config', 'UA-241337-5');
-		</script>
-	</head>
-	<body style="text-align: center">
-		<p align=center>
-			<br />
-			<img alt="18dao logo" src="18dao.gif" border="0px" width="64px" height="64px" />
-			<br />
-		</p>
-		<p>多語言一把刀實用查詢系列網站，始於2005年，致力於提供各類實用查詢信息，不斷為網民提供更優質的資訊服務。</p>
-		<hr color="#FF0000" width="80%">
-		<p align=center>
-			一把刀實用查詢
-			[ <a href="https://tw.18dao.net">💻繁體中文</a> ]
-			[ <a href="https://tw.m.18dao.net">📱行動版本</a> ]
-		</p>
-		<hr color="#FF0000" width="80%">
-		<p align=center>
-			新推出：國語辭典系列 (中華民國教育部釋出官方資料)
-		</p>
-		<p align=center>
-			《<a href="https://zidian.18dao.net">📗國語小字典</a>》
-			《<a href="https://cidian.18dao.net">📙國語辭典簡編本</a>》
-			《<a href="https://dacidian.18dao.net">📘重編國語辭典修訂本</a>》
-			《<a href="https://chengyu.18dao.net">📕成語典</a>》
-		</p>
-		<hr color="#FF0000" width="80%">
-		<p align=center>
-			《<a href="https://luanma.18dao.net">💩亂碼糾正詞典</a>》
-			《<a href="https://bishun.18dao.net">✍️筆順字典</a>》
-			《<a href="https://www.emojiall.com/zh-hant">Emoji😄表情百科</a>》
-			《<a href="https://copy.emojiall.com/zh-hant">Emoji✂複製粘貼</a>》
-            《<a href="https://zh-hant.ipshu.com/">IP地址搜尋定位</a>》
-		</p>
-		<hr color="#FF0000" width="80%">
-		<p align=center>
-			原18dao.cn系列
-		</p>
-		<p align=center>
-			《<a href="https://zhongwenzidian.18dao.net/zh-hant">中文字典</a>》
-			《<a href="https://chengyucidian.18dao.net/zh-hant">成語詞典</a>》
-			《<a href="https://yinghancidian.18dao.net/zh-hant">英漢詞典 (English-Chinese Dictionary)</a>》
-			《<a href="https://hanyingcidian.18dao.net/zh-hant">漢英詞典 (Chinese-English Dictionary)</a>》
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: radial-gradient(circle at 20% 20%, #10172a, #0f172a 60%, #020617 100%);
+                --card-bg: rgba(15, 23, 42, 0.75);
+                --card-border: rgba(148, 163, 184, 0.2);
+                --text-primary: #e2e8f0;
+                --text-secondary: #cbd5f5;
+                --divider: rgba(148, 163, 184, 0.18);
+            }
+        }
 
-			《<a href="https://hanyucidian.18dao.net/zh-hant">漢語詞典</a>》
-			《<a href="https://zhonghuachengyu.18dao.net/">中華成語大詞典</a>》
+        * {
+            box-sizing: border-box;
+        }
 
-			《<a href="https://rihancidian.18dao.net/zh-hant">日漢詞典 (日本語-中国語 辞書)</a>》
-		</p>
-		<hr color="#FF0000" width="80%">
-		<p align="center">1998-2024 v1.10 网站备案号：<a href="https://beian.miit.gov.cn/#/Integrated/index" rel="nofollow" target="new">鄂B2-20110095-6</a>、公安备案号：<a href="http://www.beian.gov.cn/" rel="nofollow" target="new">42010302000316</a></p>
-		<p><a href="http://www.027.net/">武汉市劲捷电子信息有限公司</a> 版权所有</p>
-		<p>注意：为遵守用户所在地区法律法规，本站部分内容只针对部分国家和地区开放访问，敬请谅解。</p>
-		<p align=center>
-			18dao.com | 
-			18dao.net |
-			18dao.org | 
-			18dao.info | 
-			18dao.cn
-		</p>
-<!-- Not Drupal, Not MediaWiki, Only HTML -->
-	<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="5ecfac430f60c5e43243e923-|49" defer></script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"9810dea018fddf07","serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2025.8.0","token":"dd214a768b354170bfb6ed42ef130967"}' crossorigin="anonymous"></script>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 16px 64px;
+        }
+
+        .page {
+            width: min(960px, 100%);
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: clamp(24px, 4vw, 48px);
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: clamp(24px, 5vw, 48px);
+        }
+
+        .logo {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: rgba(249, 115, 22, 0.08);
+            padding: 12px;
+            box-shadow: 0 12px 24px rgba(249, 115, 22, 0.18);
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+            margin: 0 0 12px;
+            letter-spacing: 0.04em;
+        }
+
+        .tagline {
+            margin: 0 auto 20px;
+            max-width: 640px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .cta-group a {
+            text-decoration: none;
+            color: #fff;
+            background: var(--accent);
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 12px 24px rgba(249, 115, 22, 0.25);
+        }
+
+        .cta-group a:hover,
+        .cta-group a:focus-visible {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 5vw, 40px);
+        }
+
+        section h2 {
+            font-size: 1.25rem;
+            margin: 0 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        section h2::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--divider);
+        }
+
+        .link-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .link-card {
+            position: relative;
+            padding: 18px 20px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--card-border);
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 600;
+            line-height: 1.5;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .link-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0) 0%, rgba(249, 115, 22, 0.12) 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .link-card span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .link-card:hover,
+        .link-card:focus-visible {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 30px rgba(15, 23, 42, 0.12);
+            border-color: rgba(249, 115, 22, 0.4);
+        }
+
+        .link-card:hover::after,
+        .link-card:focus-visible::after {
+            opacity: 1;
+        }
+
+        .notice {
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--text-secondary);
+            border-radius: 16px;
+            padding: 18px 20px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border: 1px solid rgba(59, 130, 246, 0.18);
+        }
+
+        footer {
+            margin-top: clamp(20px, 4vw, 32px);
+            padding-top: clamp(16px, 3vw, 24px);
+            border-top: 1px solid var(--divider);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        footer a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        footer a:hover,
+        footer a:focus-visible {
+            color: var(--accent-dark);
+        }
+
+        .domain-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 0;
+        }
+
+        .domain-pill {
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--divider);
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 24px 12px 48px;
+            }
+
+            .page {
+                border-radius: 18px;
+                padding: 24px;
+            }
+
+            .link-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            }
+
+            .cta-group a {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <img src="18dao.gif" alt="18DAO Logo" class="logo" width="84" height="84">
+            <h1>18DAO 一把刀實用查詢</h1>
+            <p class="tagline">多語言一把刀實用查詢系列網站，始於2005年，致力於提供各類實用查詢信息，不斷為網民提供更優質的資訊服務。</p>
+            <div class="cta-group">
+                <a href="https://tw.18dao.net" target="_blank" rel="noopener">💻 繁體中文站</a>
+                <a href="https://tw.m.18dao.net" target="_blank" rel="noopener">📱 行動版</a>
+            </div>
+        </header>
+
+        <main>
+            <section>
+                <h2>新推出 · 國語辭典系列</h2>
+                <div class="link-grid">
+                    <a class="link-card" href="https://zidian.18dao.net" target="_blank" rel="noopener"><span>📗 國語小字典</span></a>
+                    <a class="link-card" href="https://cidian.18dao.net" target="_blank" rel="noopener"><span>📙 國語辭典簡編本</span></a>
+                    <a class="link-card" href="https://dacidian.18dao.net" target="_blank" rel="noopener"><span>📘 重編國語辭典修訂本</span></a>
+                    <a class="link-card" href="https://chengyu.18dao.net" target="_blank" rel="noopener"><span>📕 成語典</span></a>
+                </div>
+            </section>
+
+            <section>
+                <h2>實用工具</h2>
+                <div class="link-grid">
+                    <a class="link-card" href="https://luanma.18dao.net" target="_blank" rel="noopener"><span>💩 亂碼糾正詞典</span></a>
+                    <a class="link-card" href="https://bishun.18dao.net" target="_blank" rel="noopener"><span>✍️ 筆順字典</span></a>
+                    <a class="link-card" href="https://www.emojiall.com/zh-hant" target="_blank" rel="noopener"><span>😄 Emoji 表情百科</span></a>
+                    <a class="link-card" href="https://copy.emojiall.com/zh-hant" target="_blank" rel="noopener"><span>✂ Emoji 複製貼上</span></a>
+                    <a class="link-card" href="https://zh-hant.ipshu.com/" target="_blank" rel="noopener"><span>📍 IP 地址搜尋定位</span></a>
+                </div>
+            </section>
+
+            <section>
+                <h2>原 18dao.cn 系列</h2>
+                <div class="link-grid">
+                    <a class="link-card" href="https://zhongwenzidian.18dao.net/zh-hant" target="_blank" rel="noopener"><span>《中文字典》</span></a>
+                    <a class="link-card" href="https://chengyucidian.18dao.net/zh-hant" target="_blank" rel="noopener"><span>《成語詞典》</span></a>
+                    <a class="link-card" href="https://yinghancidian.18dao.net/zh-hant" target="_blank" rel="noopener"><span>《英漢詞典》 English-Chinese Dictionary</span></a>
+                    <a class="link-card" href="https://hanyingcidian.18dao.net/zh-hant" target="_blank" rel="noopener"><span>《漢英詞典》 Chinese-English Dictionary</span></a>
+                    <a class="link-card" href="https://hanyucidian.18dao.net/zh-hant" target="_blank" rel="noopener"><span>《漢語詞典》</span></a>
+                    <a class="link-card" href="https://zhonghuachengyu.18dao.net/" target="_blank" rel="noopener"><span>《中華成語大詞典》</span></a>
+                    <a class="link-card" href="https://rihancidian.18dao.net/zh-hant" target="_blank" rel="noopener"><span>《日漢詞典》 日本語-中国語 辞書</span></a>
+                </div>
+            </section>
+
+            <section class="notice">
+                <strong>提示：</strong>為遵守使用者所在地區法律法規，本站部分內容僅對部分國家與地區開放訪問，敬請見諒。
+            </section>
+        </main>
+
+        <footer>
+            <p>1998-2024 v1.10 網站備案號：<a href="https://beian.miit.gov.cn/#/Integrated/index" rel="nofollow noopener" target="_blank">鄂B2-20110095-6</a>、公安備案號：<a href="http://www.beian.gov.cn/" rel="nofollow noopener" target="_blank">42010302000316</a></p>
+            <p><a href="http://www.027.net/" target="_blank" rel="noopener">武漢市勁捷電子信息有限公司</a> 版權所有</p>
+            <div class="domain-list" aria-label="18dao 相關網域">
+                <span class="domain-pill">18dao.com</span>
+                <span class="domain-pill">18dao.net</span>
+                <span class="domain-pill">18dao.org</span>
+                <span class="domain-pill">18dao.info</span>
+                <span class="domain-pill">18dao.cn</span>
+            </div>
+        </footer>
+    </div>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7763986334422934" crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-241337-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-241337-5');
+    </script>
 </body>
 </html>
