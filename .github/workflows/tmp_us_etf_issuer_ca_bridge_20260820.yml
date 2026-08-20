@@ -1,5 +1,8 @@
 name: tmp-us-etf-issuer-ca-bridge-20260820
 on:
+  pull_request:
+    paths:
+      - tmp/us_etf_issuer_ca_trigger_20260820.txt
   push:
     branches:
       - tmp/us-etf-issuer-ca-20260820
