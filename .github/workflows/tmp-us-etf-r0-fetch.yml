@@ -5,6 +5,11 @@ on:
     paths:
       - tmp/us_etf_r0_fetch.py
       - .github/workflows/tmp-us-etf-r0-fetch.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - tmp/us_etf_r0_fetch.py
+      - .github/workflows/tmp-us-etf-r0-fetch.yml
   workflow_dispatch:
 permissions:
   contents: read
