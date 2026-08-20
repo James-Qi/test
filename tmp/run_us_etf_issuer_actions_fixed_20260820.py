@@ -15,4 +15,6 @@ source = source.replace(
     " text=raw.decode('utf-8-sig',errors='replace')\n root=ET.fromstring(text)",
     " text=raw.decode('utf-8-sig',errors='replace')\n # BlackRock SpreadsheetML contains unescaped ampersands in hyperlink attributes.\n text=re.sub(r'&(?!#\\d+;|#x[0-9A-Fa-f]+;|[A-Za-z][A-Za-z0-9]+;)', '&amp;', text)\n root=ET.fromstring(text)",
 )
+source = source.replace("INVESCO={'RSP':'46137V357','QQQ':'46090E103'}", "INVESCO={}")
+source = source.replace("[('navpershare','nav'),('date','asofdate')]", "[('navpershare','nav'),('date','asofdate','asof')]")
 exec(compile(source, str(p), 'exec'), {'__name__': '__main__', '__file__': str(p)})
