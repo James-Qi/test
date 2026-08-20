@@ -1,2 +1,2 @@
 Trigger official iShares and Invesco distribution retrieval for US ETF R0 v2.
-Retry 2: sanitized BlackRock SpreadsheetML and exact Invesco browser headers.
+Retry 3: exact Invesco native fetch plus iShares SpreadsheetML current-share history.
