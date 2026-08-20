@@ -1,0 +1,27 @@
+# Temporary Yahoo chart links for R0 data audit
+
+These are public market-data cache endpoints used only to bootstrap reproducible source files in the ChatGPT sandbox. Delete after download.
+
+- [SPY](https://query1.finance.yahoo.com/v8/finance/chart/SPY?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [QQQ](https://query1.finance.yahoo.com/v8/finance/chart/QQQ?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [IWM](https://query1.finance.yahoo.com/v8/finance/chart/IWM?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [DIA](https://query1.finance.yahoo.com/v8/finance/chart/DIA?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [RSP](https://query1.finance.yahoo.com/v8/finance/chart/RSP?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [MDY](https://query1.finance.yahoo.com/v8/finance/chart/MDY?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLB](https://query1.finance.yahoo.com/v8/finance/chart/XLB?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLE](https://query1.finance.yahoo.com/v8/finance/chart/XLE?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLF](https://query1.finance.yahoo.com/v8/finance/chart/XLF?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLI](https://query1.finance.yahoo.com/v8/finance/chart/XLI?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLK](https://query1.finance.yahoo.com/v8/finance/chart/XLK?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLP](https://query1.finance.yahoo.com/v8/finance/chart/XLP?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLU](https://query1.finance.yahoo.com/v8/finance/chart/XLU?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLV](https://query1.finance.yahoo.com/v8/finance/chart/XLV?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLY](https://query1.finance.yahoo.com/v8/finance/chart/XLY?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLC](https://query1.finance.yahoo.com/v8/finance/chart/XLC?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [XLRE](https://query1.finance.yahoo.com/v8/finance/chart/XLRE?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [IWF](https://query1.finance.yahoo.com/v8/finance/chart/IWF?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [IWD](https://query1.finance.yahoo.com/v8/finance/chart/IWD?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [MTUM](https://query1.finance.yahoo.com/v8/finance/chart/MTUM?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [QUAL](https://query1.finance.yahoo.com/v8/finance/chart/QUAL?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [USMV](https://query1.finance.yahoo.com/v8/finance/chart/USMV?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
+- [VLUE](https://query1.finance.yahoo.com/v8/finance/chart/VLUE?period1=0&period2=1787270400&interval=1d&events=div%2Csplits&includeAdjustedClose=true)
