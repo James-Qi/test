@@ -1,0 +1,103 @@
+name: Yahoo ETF R0 Bridge
+
+on:
+  push:
+    paths:
+      - 'tmp/yahoo_etf_r0_trigger.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-yahoo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch Yahoo chart events and validation points
+        run: |
+          python - <<'PY'
+          import csv, gzip, hashlib, json, os, time, urllib.parse, urllib.request
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          symbols = ['SPY','QQQ','IWM','DIA','RSP','MDY','XLB','XLE','XLF','XLI','XLK','XLP','XLU','XLV','XLY','XLC','XLRE','IWF','IWD','MTUM','QUAL','USMV','VLUE']
+          out = Path('tmp/yahoo_etf_r0_cache')
+          out.mkdir(parents=True, exist_ok=True)
+          actions=[]; validation=[]; increment=[]; meta=[]
+          ua={'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36'}
+
+          for symbol in symbols:
+              params = urllib.parse.urlencode({'period1':0,'period2':1787270400,'interval':'1d','events':'div,splits','includeAdjustedClose':'true'})
+              url=f'https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?{params}'
+              req=urllib.request.Request(url, headers=ua)
+              for attempt in range(5):
+                  try:
+                      with urllib.request.urlopen(req, timeout=45) as r:
+                          payload=json.load(r)
+                      break
+                  except Exception:
+                      if attempt==4: raise
+                      time.sleep(2*(attempt+1))
+              result=payload['chart']['result'][0]
+              ts=result.get('timestamp') or []
+              q=(result.get('indicators',{}).get('quote') or [{}])[0]
+              adj=(result.get('indicators',{}).get('adjclose') or [{}])[0].get('adjclose') or [None]*len(ts)
+              closes=q.get('close') or [None]*len(ts)
+              opens=q.get('open') or [None]*len(ts)
+              highs=q.get('high') or [None]*len(ts)
+              lows=q.get('low') or [None]*len(ts)
+              vols=q.get('volume') or [None]*len(ts)
+              dates=[datetime.fromtimestamp(x,timezone.utc).date().isoformat() for x in ts]
+              rows=[]
+              for i,d in enumerate(dates):
+                  c=closes[i] if i<len(closes) else None
+                  a=adj[i] if i<len(adj) else None
+                  factor=(a/c) if (a is not None and c not in (None,0)) else None
+                  rows.append((d,c,a,factor))
+                  if d>='2026-07-10':
+                      increment.append({'symbol':symbol,'trade_date':d,'open':opens[i],'high':highs[i],'low':lows[i],'close':c,'adj_close':a,'volume':vols[i],'source':'yahoo_chart'})
+              by_month={}
+              for row in rows:
+                  by_month[row[0][:7]]=row
+              for d,c,a,f in by_month.values():
+                  validation.append({'symbol':symbol,'trade_date':d,'raw_close':c,'adj_close':a,'adj_factor':f,'sample_type':'month_end','source':'yahoo_chart'})
+              ev=result.get('events') or {}
+              for e in (ev.get('dividends') or {}).values():
+                  d=datetime.fromtimestamp(int(e['date']),timezone.utc).date().isoformat()
+                  actions.append({'symbol':symbol,'ex_date':d,'action_type':'cash_dividend','cash_amount':e.get('amount'),'split_ratio':None,'numerator':None,'denominator':None,'source':'yahoo_chart','event_timestamp':e.get('date')})
+              for e in (ev.get('splits') or {}).values():
+                  d=datetime.fromtimestamp(int(e['date']),timezone.utc).date().isoformat()
+                  num=e.get('numerator'); den=e.get('denominator')
+                  ratio=(float(num)/float(den)) if num not in (None,0) and den not in (None,0) else None
+                  actions.append({'symbol':symbol,'ex_date':d,'action_type':'split','cash_amount':None,'split_ratio':ratio,'numerator':num,'denominator':den,'source':'yahoo_chart','event_timestamp':e.get('date')})
+              meta.append({'symbol':symbol,'rows':len(ts),'min_date':dates[0] if dates else None,'max_date':dates[-1] if dates else None,'dividends':len((ev.get('dividends') or {})),'splits':len((ev.get('splits') or {})),'currency':result.get('meta',{}).get('currency'),'exchange':result.get('meta',{}).get('exchangeName'),'instrument_type':result.get('meta',{}).get('instrumentType'),'url':url})
+              time.sleep(0.25)
+
+          def write_gz(name, rows, fields):
+              p=out/name
+              with gzip.open(p,'wt',encoding='utf-8',newline='') as f:
+                  w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+              return p
+          actions.sort(key=lambda x:(x['symbol'],x['ex_date'],x['action_type']))
+          validation.sort(key=lambda x:(x['symbol'],x['trade_date']))
+          increment.sort(key=lambda x:(x['symbol'],x['trade_date']))
+          files=[]
+          files.append(write_gz('yahoo_corporate_actions_23etf.csv.gz',actions,['symbol','ex_date','action_type','cash_amount','split_ratio','numerator','denominator','source','event_timestamp']))
+          files.append(write_gz('yahoo_adjustment_monthly_validation_23etf.csv.gz',validation,['symbol','trade_date','raw_close','adj_close','adj_factor','sample_type','source']))
+          files.append(write_gz('yahoo_increment_20260710_20260820_23etf.csv.gz',increment,['symbol','trade_date','open','high','low','close','adj_close','volume','source']))
+          mp=out/'yahoo_meta_23etf.json'; mp.write_text(json.dumps(meta,ensure_ascii=False,indent=2),encoding='utf-8'); files.append(mp)
+          manifest={'generated_at':datetime.now(timezone.utc).isoformat(),'symbols':symbols,'actions_rows':len(actions),'validation_rows':len(validation),'increment_rows':len(increment),'files':[]}
+          for p in files:
+              manifest['files'].append({'path':str(p),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Commit cache
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tmp/yahoo_etf_r0_cache
+          git commit -m 'Add Yahoo 23-ETF R0 bridge cache' || exit 0
+          git push
