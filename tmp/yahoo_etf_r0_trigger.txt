@@ -1,0 +1,2 @@
+triggered_at=2026-08-19T20:05:00-07:00
+purpose=R0 Yahoo chart events and validation bridge
