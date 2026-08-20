@@ -1,0 +1,33 @@
+name: Temporary US ETF R0 patch fetch
+
+on:
+  push:
+    branches:
+      - tmp/us-etf-yahoo-links-20260819
+    paths:
+      - tmp/us_etf_r0_fetch.py
+      - .github/workflows/tmp-us-etf-r0-fetch.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch bounded data
+        run: python tmp/us_etf_r0_fetch.py
+      - name: Upload ephemeral artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: us-etf-r0-bounded-patch-20260819
+          path: tmp/us_etf_r0_output/
+          retention-days: 1
+          if-no-files-found: error
+          compression-level: 9
