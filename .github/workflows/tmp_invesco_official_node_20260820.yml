@@ -1,0 +1,27 @@
+name: tmp-invesco-official-node-20260820
+
+on:
+  pull_request:
+    paths:
+      - 'tmp/invesco_official_node_trigger_20260820.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch official Invesco distributions with browser-compatible Node fetch
+        run: node tmp/fetch_invesco_official_node_20260820.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: invesco-official-node-20260820
+          path: artifact/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
