@@ -1,13 +1,11 @@
 name: tmp-us-etf-yahoo-cache
 
 on:
-  push:
-    paths:
-      - '.github/workflows/tmp_us_etf_yahoo_cache.yml'
+  pull_request:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   fetch-yahoo-cache:
@@ -27,21 +25,3 @@ jobs:
           compression-level: 6
           retention-days: 7
           if-no-files-found: error
-      - name: Record workflow run ID
-        shell: bash
-        run: |
-          mkdir -p tmp
-          cat > tmp/us_etf_yahoo_cache_run.json <<EOF
-          {
-            "run_id": "${GITHUB_RUN_ID}",
-            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
-            "workflow": "${GITHUB_WORKFLOW}",
-            "source_commit": "${GITHUB_SHA}",
-            "completed_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          EOF
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tmp/us_etf_yahoo_cache_run.json
-          git commit -m "Record temporary Yahoo cache workflow run ${GITHUB_RUN_ID}"
-          git push origin HEAD:main
