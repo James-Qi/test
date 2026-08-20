@@ -1,3 +1,4 @@
+# One-shot R0 data patch; remove after artifact download.
 name: Temporary US ETF R0 patch fetch
 on:
   push:
