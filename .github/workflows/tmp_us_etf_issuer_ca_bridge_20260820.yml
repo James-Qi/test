@@ -4,12 +4,14 @@ on:
     paths:
       - tmp/us_etf_issuer_ca_trigger_20260820.txt
       - tmp/run_us_etf_issuer_actions_fixed_20260820.py
+      - tmp/fetch_invesco_issuer_actions_20260820.mjs
   push:
     branches:
       - tmp/us-etf-issuer-ca-20260820
     paths:
       - tmp/us_etf_issuer_ca_trigger_20260820.txt
       - tmp/run_us_etf_issuer_actions_fixed_20260820.py
+      - tmp/fetch_invesco_issuer_actions_20260820.mjs
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,9 +24,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install dependency
+      - name: Install Python dependency
         run: python -m pip install --disable-pip-version-check 'requests>=2.32,<3'
-      - name: Fetch and normalize official issuer data
+      - name: Fetch Invesco official distributions with native fetch
+        run: node tmp/fetch_invesco_issuer_actions_20260820.mjs
+      - name: Fetch and normalize iShares official workbooks
         run: python tmp/run_us_etf_issuer_actions_fixed_20260820.py
       - name: Upload issuer cache
         if: always()
